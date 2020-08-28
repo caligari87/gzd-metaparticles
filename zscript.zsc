@@ -1,0 +1,82 @@
+version "4.4"
+
+class MetaParticle : Actor {
+	bool initialized;
+	array<color> col;
+	array<int> life;
+	array<int> size;
+	array<double> xpos;
+	array<double> ypos;
+	array<double> zpos;
+	array<double> xvel;
+	array<double> yvel;
+	array<double> zvel;
+	array<double> alf;
+	int maxparticles;
+	property MaxParticles: maxparticles;
+	default {
+		MetaParticle.MaxParticles 512;
+		+NOINTERACTION;
+	}
+
+
+	virtual bool InitParticles() {
+		col.resize(maxparticles);
+		life.resize(maxparticles);
+		size.resize(maxparticles);
+		xpos.resize(maxparticles);
+		ypos.resize(maxparticles);
+		zpos.resize(maxparticles);
+		xvel.resize(maxparticles);
+		yvel.resize(maxparticles);
+		zvel.resize(maxparticles);
+		alf.resize(maxparticles);
+
+		for (int i = 0; i < maxparticles; i++) {
+			xpos[i] = frandom(-8,8);
+			ypos[i] = frandom(-8,8);
+			zpos[i] = frandom(-8,8);
+			alf[i] = 1;
+		}
+
+		return true;
+	}
+
+	override void Tick() {
+		super.Tick();
+		if(isFrozen()) { return; }
+		vel.y = 1;
+		if (maxparticles == 0) { return; }
+		if (!initialized) { initialized = InitParticles(); }
+		for (int i = 0; i < maxparticles; i++) {
+			A_SpawnParticle(
+				//color
+				"WHITE",
+				//flags
+				0,
+				//lifetime
+				1,
+				//size
+				4,
+				//angle
+				0,
+				//x, y, z
+				xpos[i],
+				ypos[i],
+				zpos[i],
+				//vel
+				vel.x + xvel[i],
+				vel.y + yvel[i],
+				vel.z + zvel[i],
+				//accel
+				0,0,0,
+				//startalpha
+				alf[i],
+				//fadestep
+				-1,
+				//sizestep
+				0
+			);
+		}
+	}
+}
