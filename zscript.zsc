@@ -1,82 +1,66 @@
 version "4.4"
 
+class MetaParticleData {
+	double size, alpha;
+	color col;
+	int life;
+	vector3 pos, vel;
+}
+
 class MetaParticle : Actor {
 	bool initialized;
-	array<color> col;
-	array<int> life;
-	array<int> size;
-	array<double> xpos;
-	array<double> ypos;
-	array<double> zpos;
-	array<double> xvel;
-	array<double> yvel;
-	array<double> zvel;
-	array<double> alf;
+	array<MetaParticleData> particles;
 	int maxparticles;
-	property MaxParticles: maxparticles;
-	default {
-		MetaParticle.MaxParticles 512;
-		+NOINTERACTION;
+	property MaxParticles: MaxParticles;
+	default { +NOINTERACTION; }
+
+	override void PostBeginPlay() {
+		super.PostBeginPlay();
+		particles.resize(maxparticles);
+		for (int i = 0; i < maxparticles; i++) {
+			if (!particles[i]) {
+				particles[i] = new("MetaParticleData");
+				ParticleInit(particles[i], true);
+			}
+		}
+		bool initialized = true;
 	}
 
+	virtual void ParticleInit(MetaParticleData p, bool first) {	}
+	virtual void ParticleUpdate(MetaParticleData p) {	}
 
-	virtual bool InitParticles() {
-		col.resize(maxparticles);
-		life.resize(maxparticles);
-		size.resize(maxparticles);
-		xpos.resize(maxparticles);
-		ypos.resize(maxparticles);
-		zpos.resize(maxparticles);
-		xvel.resize(maxparticles);
-		yvel.resize(maxparticles);
-		zvel.resize(maxparticles);
-		alf.resize(maxparticles);
-
-		for (int i = 0; i < maxparticles; i++) {
-			xpos[i] = frandom(-8,8);
-			ypos[i] = frandom(-8,8);
-			zpos[i] = frandom(-8,8);
-			alf[i] = 1;
-		}
-
-		return true;
+	void ParticleTick(MetaParticleData p) {
+		p.pos += p.vel;
+		p.life--;
+		if (p.life <= 0) p.Destroy();
 	}
 
 	override void Tick() {
 		super.Tick();
 		if(isFrozen()) { return; }
-		vel.y = 1;
 		if (maxparticles == 0) { return; }
-		if (!initialized) { initialized = InitParticles(); }
+		if (particles.size()<1 || MaxParticles<= 0) { return; }
 		for (int i = 0; i < maxparticles; i++) {
-			A_SpawnParticle(
-				//color
-				"WHITE",
-				//flags
-				0,
-				//lifetime
-				1,
-				//size
-				4,
-				//angle
-				0,
-				//x, y, z
-				xpos[i],
-				ypos[i],
-				zpos[i],
-				//vel
-				vel.x + xvel[i],
-				vel.y + yvel[i],
-				vel.z + zvel[i],
-				//accel
-				0,0,0,
-				//startalpha
-				alf[i],
-				//fadestep
-				-1,
-				//sizestep
-				0
+			if (!particles[i]) {
+				particles[i] = new("MetaParticleData");
+				ParticleInit(particles[i], false);
+			}
+			MetaParticleData cmp = particles[i];
+			self.A_SpawnParticle(
+				cmp.col,
+				flags: SPF_RELATIVE,
+				lifetime: 1,
+				size: cmp.size,
+				xoff: cmp.pos.x,
+				yoff: cmp.pos.y,
+				zoff: cmp.pos.z,
+				velx: cmp.vel.x,
+				vely: cmp.vel.y,
+				velz: cmp.vel.z,
+				startalphaf: cmp.alpha
 			);
+			ParticleUpdate(cmp);
+			ParticleTick(cmp);
 		}
 	}
 }
