@@ -2,14 +2,14 @@ version "4.4"
 
 #include "examples.zsc"
 
-class MetaParticleData {
+class MetaParticle {
 	double size, alpha;
 	color col;
 	int life;
 	vector3 pos, vel;
 }
 
-class MetaParticle : Actor {
+class MetaParticleHandler : Actor {
 	array<MetaParticleData> particles;
 	int maxparticles;
 	property MaxParticles: MaxParticles;
