@@ -1,0 +1,97 @@
+class MPSnow : MetaParticle {
+	default { MetaParticle.MaxParticles 200; }
+
+	override void ParticleInit(MetaParticleData p, bool first) {
+		p.pos.x = frandom(-128, 128);
+		p.pos.y = frandom(-128, 128);
+		if (first) { p.pos.z = frandom(0, 128); }
+		else { p.pos.z = 128; }
+		p.col = "grey";
+		p.life = 3500;
+		p.size = frandom(2,6);
+		p.alpha = 1.0;
+		p.vel.z = frandom(-0.5, -1);
+	}
+
+	override void ParticleUpdate(MetaParticleData p) {
+		p.vel.x += frandom(-0.1, 0.1);
+		p.vel.y += frandom(-0.1, 0.1);
+		p.vel.x  = clamp(p.vel.x, -5, 5);
+		p.vel.y  = clamp(p.vel.y, -5, 5);
+		bool oob = (
+			p.pos.x < -128 ||
+			p.pos.x >  128 ||
+			p.pos.y < -128 ||
+			p.pos.y >  128 ||
+			p.pos.z <  0
+		);
+		if (oob) { p.life = 1; }
+	}
+}
+
+class MPFire : MetaParticle {
+	default { MetaParticle.MaxParticles 200; }
+
+	override void ParticleInit(MetaParticleData p, bool first) {
+		p.pos.x = frandom(-8, 8);
+		p.pos.y = frandom(-8, 8);
+		p.pos.z = -6;
+		p.alpha = 1.0;
+		p.col = heatcolor[p.alpha*36];
+		if (first) { p.life = random(0,175); }
+		else { p.life = random(35,175); }
+		p.size = frandom(4,8);
+		p.vel.z = p.life / 175.0;
+	}
+
+	override void ParticleUpdate(MetaParticleData p) {
+		p.vel.x += frandom(-0.1, 0.1) - (p.pos.x * 0.01);
+		p.vel.y += frandom(-0.1, 0.1) - (p.pos.y * 0.01);
+		p.alpha *= frandom(0.9, 0.99);
+		p.col = heatcolor[p.alpha*36];
+		p.size *= frandom(1, 1.05);
+		p.vel.z *= frandom(1.01, 1.05);
+
+		if(p.alpha <= 0.01) p.life = 1;
+	}
+
+	static const Color heatcolor[] = {
+		"070707",
+		"1F0707",
+		"2F0F07",
+		"470F07",
+		"571707",
+		"671F07",
+		"771F07",
+		"8F2707",
+		"9F2F07",
+		"AF3F07",
+		"BF4707",
+		"C74707",
+		"DF4F07",
+		"DF5707",
+		"DF5707",
+		"D75F07",
+		"D75F07",
+		"D7670F",
+		"CF6F0F",
+		"CF770F",
+		"CF7F0F",
+		"CF8717",
+		"C78717",
+		"C78F17",
+		"C7971F",
+		"BF9F1F",
+		"BF9F1F",
+		"BFA727",
+		"BFA727",
+		"BFAF2F",
+		"B7AF2F",
+		"B7B72F",
+		"B7B737",
+		"CFCF6F",
+		"DFDF9F",
+		"EFEFC7",
+		"FFFFFF"
+	};
+}

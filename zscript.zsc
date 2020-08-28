@@ -1,5 +1,7 @@
 version "4.4"
 
+#include "examples.zsc"
+
 class MetaParticleData {
 	double size, alpha;
 	color col;
