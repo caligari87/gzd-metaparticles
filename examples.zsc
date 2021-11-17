@@ -1,5 +1,5 @@
-class MPSnow : MetaParticleHandler {
-	default { MetaParticleHandler.MaxParticles 200; }
+class MPSnow : MetaParticle {
+	default { MetaParticle.MaxParticles 200; }
 
 	override void ParticleInit(MetaParticleData p, bool first) {
 		p.pos.x = frandom(-128, 128);
@@ -29,8 +29,8 @@ class MPSnow : MetaParticleHandler {
 	}
 }
 
-class MPFire : MetaParticleHandler {
-	default { MetaParticleHandler.MaxParticles 200; }
+class MPFire : MetaParticle {
+	default { MetaParticle.MaxParticles 200; }
 
 	override void ParticleInit(MetaParticleData p, bool first) {
 		p.pos.x = frandom(-8, 8);
