@@ -19,5 +19,6 @@ The `MetaParticleData` class is NOT meant to be used directly. When accessed fro
 - `int life` - Lifetime in ticks.
 - `vector3 pos` - Position with `(x, y, z)`.
 - `vector3 vel` - Velocity with `(x, y, z)`.
+- `bool bright` - Renders the particle fullbright.
 
 Please see the `examples.zsc` file for two simple effects: `MPSnow` and `MPFire`. These may be tested ingame using the `summon` console command.
