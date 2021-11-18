@@ -7,6 +7,7 @@ class MetaParticleData {
 	color col;
 	int life;
 	vector3 pos, vel;
+	bool bright;
 }
 
 class MetaParticle : Actor abstract {
@@ -48,7 +49,7 @@ class MetaParticle : Actor abstract {
 			MetaParticleData cmp = particles[i];
 			self.A_SpawnParticle(
 				cmp.col,
-				flags: SPF_RELATIVE,
+				flags: SPF_RELATIVE|cmp.bright,
 				lifetime: 1,
 				size: cmp.size,
 				xoff: cmp.pos.x,

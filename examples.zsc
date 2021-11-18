@@ -1,12 +1,12 @@
 class MPSnow : MetaParticle {
-	default { MetaParticle.MaxParticles 200; }
+	default { MetaParticle.MaxParticles 1000; }
 
 	override void ParticleInit(MetaParticleData p, bool first) {
 		p.pos.x = frandom(-128, 128);
 		p.pos.y = frandom(-128, 128);
 		if (first) { p.pos.z = frandom(0, 128); }
 		else { p.pos.z = 128; }
-		p.col = "grey";
+		p.col = "white";
 		p.life = 3500;
 		p.size = frandom(2,6);
 		p.alpha = 1.0;
@@ -47,10 +47,11 @@ class MPFire : MetaParticle {
 	override void ParticleUpdate(MetaParticleData p) {
 		p.vel.x += frandom(-0.1, 0.1) - (p.pos.x * 0.01);
 		p.vel.y += frandom(-0.1, 0.1) - (p.pos.y * 0.01);
-		p.alpha *= frandom(0.9, 0.99);
+		p.alpha *= frandom(0.95, 0.99);
 		p.col = heatcolor[p.alpha*36];
 		p.size *= frandom(1, 1.05);
-		p.vel.z *= frandom(1.01, 1.05);
+		p.vel.z *= frandom(1.01, 1.03);
+		p.bright = (p.alpha>0.25);
 
 		if(p.alpha <= 0.01) p.life = 1;
 	}
